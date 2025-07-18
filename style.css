@@ -1,0 +1,402 @@
+/* Variables for easy customization */
+:root {
+    --square-size: 55px; /* Adjust this to make the board larger/smaller */
+    --board-background-light: #f0d9b5;
+    --board-background-dark: #b58863;
+    --selected-square-color: #a3ff00;
+    --highlight-move-color: rgba(0, 255, 0, 0.5);
+    --check-king-color: rgba(255, 0, 0, 0.5);
+    --font-color-light: #333;
+    --font-color-dark: #eee;
+    --button-bg: #ccc;
+    --button-hover-bg: #bbb;
+    --button-selected-bg: #808080;
+    --panel-bg: #e0e0e0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to the top for better content visibility */
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+    padding: 20px; /* Add some padding around the content */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+.container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 900px; /* Adjust max-width for better layout on wider screens */
+    display: flex;
+    flex-direction: column; /* Arrange content vertically */
+    gap: 20px; /* Space between sections */
+}
+
+h1 {
+    color: var(--font-color-light);
+    margin-bottom: 20px;
+}
+
+/* Game Controls (Initial Menu) */
+#game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#game-controls p {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--button-bg);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+    background-color: var(--button-hover-bg);
+}
+
+button.selected {
+    background-color: var(--button-selected-bg);
+    color: var(--font-color-dark);
+}
+
+button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+    color: #a0a0a0;
+}
+
+/* Chessboard Container - Enables Scrolling */
+#chessboard-container {
+    overflow: auto; /* Enables scrollbars when content overflows */
+    -webkit-overflow-scrolling: touch; /* Improves scrolling performance on iOS */
+    max-width: 100%; /* Ensures it doesn't exceed parent width */
+    /* If you want a fixed height for the container to force vertical scroll, uncomment below */
+    /* max-height: 480px; */ /* Example: adjust as needed to create scroll */
+    margin: 0 auto; /* Center the container if it's smaller than max-width */
+    border: 1px solid #ccc; /* Optional: border to see the container */
+}
+
+
+#chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, var(--square-size));
+    grid-template-rows: repeat(8, var(--square-size));
+    width: calc(var(--square-size) * 8); /* Explicitly set size to enable overflow */
+    height: calc(var(--square-size) * 8); /* Explicitly set size to enable overflow */
+    margin: 0 auto;
+    border: 3px solid var(--board-background-dark);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* No overflow:hidden here as the container handles it */
+}
+
+/* Flipped board for Black's POV */
+#chessboard.flipped {
+    transform: rotate(180deg);
+}
+
+#chessboard.flipped .square {
+    transform: rotate(180deg); /* Flip pieces back to normal */
+}
+
+
+.square {
+    width: var(--square-size);
+    height: var(--square-size);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: calc(var(--square-size) * 0.7); /* Piece size relative to square */
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+}
+
+.light {
+    background-color: var(--board-background-light);
+}
+
+.dark {
+    background-color: var(--board-background-dark);
+}
+
+.white-piece {
+    color: #fff; /* White pieces can be light colored */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Optional: for better contrast */
+}
+
+.black-piece {
+    color: #000; /* Black pieces can be dark colored */
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.5); /* Optional: for better contrast */
+}
+
+/* Highlight for selected piece */
+.selected-piece {
+    background-color: var(--selected-square-color);
+}
+
+/* Highlight for legal moves */
+.highlight-move {
+    background-color: var(--highlight-move-color);
+    border: 2px solid var(--highlight-move-color); /* Add border to make it more visible */
+    box-sizing: border-box; /* Ensure border doesn't push square size */
+}
+
+/* Highlight for king in check */
+.in-check-king {
+    background-color: var(--check-king-color);
+}
+
+
+/* Game Info Display */
+#game-info {
+    margin-top: 15px;
+    background-color: var(--panel-bg);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#turn-display,
+#fen-display,
+#game-status {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Move History Panel */
+#move-history-panel {
+    background-color: var(--panel-bg);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Align text within the panel */
+    max-height: 200px; /* Limit height to enable scrolling for long games */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+#move-history-panel h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--font-color-light);
+    font-size: 1.1em;
+}
+
+#move-list {
+    list-style: none; /* Remove default bullet points */
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap; /* Allow moves to wrap within the list */
+    gap: 5px 10px; /* Gap between rows and columns */
+}
+
+.move-item {
+    white-space: nowrap; /* Keep move pairs on one line */
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.move-item:hover {
+    background-color: #d0d0d0;
+}
+
+.move-item.current-move {
+    background-color: var(--selected-square-color);
+    font-weight: bold;
+}
+
+.move-number {
+    margin-right: 5px;
+    color: #555;
+}
+
+.move-text {
+    font-weight: normal;
+    color: var(--font-color-light);
+}
+
+/* Game Actions (Resign Button) */
+#game-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+/* Post-Game Options */
+#post-game-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+
+/* Promotion GUI (Modal) */
+#promotion-gui {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    max-width: 90%;
+}
+
+#promotion-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.promotion-option {
+    font-size: calc(var(--square-size) * 0.8); /* Larger piece for selection */
+    cursor: pointer;
+    border: 2px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.promotion-option:hover {
+    background-color: #eee;
+    border-color: #888;
+}
+
+/* Console Log Display */
+.logs {
+    background-color: #333;
+    color: #eee;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: left;
+    max-height: 250px;
+    overflow-y: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+    position: relative; /* For clear button positioning */
+}
+
+.logs h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 1em;
+}
+
+.logs p {
+    margin: 2px 0;
+    line-height: 1.2;
+    word-wrap: break-word; /* Ensure long lines wrap */
+}
+
+.logs .log { color: #eee; }
+.logs .warn { color: #ffeb3b; } /* Yellow for warnings */
+.logs .error { color: #ff1744; } /* Red for errors */
+
+#clear-logs {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    background-color: #555;
+    color: white;
+}
+#clear-logs:hover {
+    background-color: #777;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    :root {
+        --square-size: 45px; /* Smaller squares for smaller screens */
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    button {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+
+    #game-info {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    #promotion-options {
+        flex-direction: column; /* Stack promotion options vertically on small screens */
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --square-size: 40px; /* Even smaller squares for very small screens */
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .button-group {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 8px;
+    }
+
+    button {
+        width: 100%; /* Full width buttons */
+    }
+
+    .logs {
+        font-size: 0.75em;
+    }
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Chess</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>SIMPLE CHESS</h1>
+
+        <div id="game-controls">
+            <h2>Choose Your Side:</h2>
+            <div class="choice-buttons">
+                <button id="choose-white">Play as White</button>
+                <button id="choose-black">Play as Black</button>
+                <button id="choose-random">Play Random</button>
+            </div>
+
+            <h2>Choose Bot Difficulty:</h2>
+            <div class="difficulty-buttons">
+                <button id="difficulty-easy">Easy</button>
+                <button id="difficulty-medium" class="selected">Medium</button>
+                <button id="difficulty-hard">Hard</button>
+            </div>
+
+            <button id="start-game" disabled>Start Game</button>
+            <button id="start-bot-vs-bot">Bot vs Bot</button>
+        </div>
+
+        <div id="game-area">
+            <h2 id="turn-display" style="display: none;">Current Turn: WHITE</h2>
+            <div id="chessboard" class="chessboard"></div>
+            <p id="fen-display" style="display: none;">FEN: </p>
+            <p id="game-status" style="display: block;">Choose your side and bot difficulty, or start Bot vs Bot!</p>
+
+            <div id="game-actions" style="display: none;">
+                <button id="resign-button">Resign</button>
+            </div>
+
+            <div id="post-game-options" style="display: none;">
+                <button id="rematch-button">Rematch</button>
+                <button id="return-to-menu-button">Return to Main Menu</button>
+            </div>
+        </div>
+
+        <div id="promotion-gui" style="display: none;">
+            <div id="promotion-options">
+                </div>
+        </div>
+
+        <div id="move-history-panel" style="display: none;">
+            <h3>Move History</h3>
+            <ul id="move-list">
+                </ul>
+        </div>
+        
+        <div class="logs">
+            <h3>Logs</h3>
+            <pre id="log-output"></pre>
+            <button id="clear-logs">Clear</button>
+        </div>
+
+    </div>
+
+    <script src="chess.min.js"></script> <script src="stockfish.js"></script> <script src="script_fixed.js"></script> </body>
+</html>
